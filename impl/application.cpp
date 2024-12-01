@@ -120,71 +120,57 @@ void Application::run()
 		return;
 	}
 	std::cout << "Shader program created successfully!" << std::endl;
+
 	// ------------------------------------------------------------------------------->>
-
-
-	float vertices[] = {
-		// for rectangle
-		// positions		// colors
-		0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,		// top right
-		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,	// bottom right
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,	// bottom left
-		-0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f,	// top left
-	};
-
-	unsigned int indices[] = {
-		0, 1, 3,
-		1, 2, 3
-	};
-
-	unsigned int VBO, VAO, EBO;
-
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-	
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
+	// print OpenGL info and use shader program
 	printOpenGLInfo();
 	shaderManager.useShaderProgram();
-
 	// ------------------------------------------------------------------------------->>
 
-	glm::mat4 transform = glm::mat4(1.0f);
-	transform = glm::rotate(transform, glm::radians(0.01f), glm::vec3(0.0f, 0.0f, 0.01f));
-	transform = glm::translate(transform, glm::vec3(0.01f, -0.01f, 0.0f));
-	unsigned int transformLoc = glGetUniformLocation(shaderManager.getShaderProgram(), "transform");
-	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+	// ------------------------------------------------------------------------------->>
+	// rectangle implementation
+	// middle rectangles
+	Rectangle rect(glm::vec2(-0.5f, 0.0f), glm::vec2(0.25f, 0.25f), glm::vec3(0.12f, 0.8f, 0.5f));
+	Rectangle rectOne(glm::vec2(0.0f, 0.0f), glm::vec2(0.25f, 0.25f), glm::vec3(0.6f, 0.4f, 0.3f));
+	Rectangle rectTwo(glm::vec2(0.5f, 0.0f), glm::vec2(0.25f, 0.25f), glm::vec3(0.3f, 0.4f, 0.6f));
+	// lower rectangles
+	Rectangle rectThree(glm::vec2(-0.5f, -0.5f), glm::vec2(0.25f, 0.25f), glm::vec3(0.8f, 0.2f, 0.5f));
+	Rectangle rectFour(glm::vec2(0.0f, -0.5f), glm::vec2(0.25f, 0.25f), glm::vec3(0.5f, 0.2f, 0.8f));
+	Rectangle rectFive(glm::vec2(0.5f, -0.5f), glm::vec2(0.25f, 0.25f), glm::vec3(0.8f, 0.5f, 0.2f));
+	// upper rectangles
+	Rectangle rectSix(glm::vec2(-0.5f, 0.5f), glm::vec2(0.25f, 0.25f), glm::vec3(0.665f, 0.2555f, 0.8f));
+	Rectangle rectSeven(glm::vec2(0.0f, 0.5f), glm::vec2(0.25f, 0.25f), glm::vec3(0.46f, 0.8f, 0.9f));
+	Rectangle rectEight(glm::vec2(0.5f, 0.5f), glm::vec2(0.25f, 0.25f), glm::vec3(0.9f, 0.2f, 0.1f));
+	// ------------------------------------------------------------------------------->>
 
 	while (!glfwWindowShouldClose(window) && isRunning)
 	{
 		fpsCalculate();
 		processInput();
-		glClearColor(0.8f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		shaderManager.useShaderProgram();
-		transform = glm::rotate(transform, glm::radians(0.01f), glm::vec3(0.0f, 0.0f, 0.01f));
-		transform = glm::translate(transform, glm::vec3(0.01f, -0.01f, 0.0f));
-		transformLoc = glGetUniformLocation(shaderManager.getShaderProgram(), "transform");
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		rect.draw();
+		rectOne.draw();
+		rectTwo.draw();
+		rectThree.draw();
+		rectFour.draw();
+		rectFive.draw();
+		rectSix.draw();
+		rectSeven.draw();
+		rectEight.draw();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
-
+	// delete stuff
+	rect.~Rectangle();
+	rectOne.~Rectangle();
+	rectTwo.~Rectangle();
+	rectThree.~Rectangle();
+	rectFour.~Rectangle();
+	rectFive.~Rectangle();
+	rectSix.~Rectangle();
+	rectSeven.~Rectangle();
+	rectEight.~Rectangle();
+	shaderManager.deleteShaderProgram();
 }

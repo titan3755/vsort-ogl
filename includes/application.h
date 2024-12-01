@@ -1,5 +1,6 @@
 #pragma once
 #include <shader_manager.h>
+#include <rectangle.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
