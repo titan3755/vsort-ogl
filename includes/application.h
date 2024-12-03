@@ -1,10 +1,13 @@
 #pragma once
+#define GLM_ENABLE_EXPERIMENTAL
 #include <shader_manager.h>
 #include <rectangle.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <glm/ext.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 

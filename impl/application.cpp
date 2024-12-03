@@ -129,48 +129,47 @@ void Application::run()
 
 	// ------------------------------------------------------------------------------->>
 	// rectangle implementation
-	// middle rectangles
-	Rectangle rect(glm::vec2(-0.5f, 0.0f), glm::vec2(0.25f, 0.25f), glm::vec3(0.12f, 0.8f, 0.5f));
-	Rectangle rectOne(glm::vec2(0.0f, 0.0f), glm::vec2(0.25f, 0.25f), glm::vec3(0.6f, 0.4f, 0.3f));
-	Rectangle rectTwo(glm::vec2(0.5f, 0.0f), glm::vec2(0.25f, 0.25f), glm::vec3(0.3f, 0.4f, 0.6f));
-	// lower rectangles
-	Rectangle rectThree(glm::vec2(-0.5f, -0.5f), glm::vec2(0.25f, 0.25f), glm::vec3(0.8f, 0.2f, 0.5f));
-	Rectangle rectFour(glm::vec2(0.0f, -0.5f), glm::vec2(0.25f, 0.25f), glm::vec3(0.5f, 0.2f, 0.8f));
-	Rectangle rectFive(glm::vec2(0.5f, -0.5f), glm::vec2(0.25f, 0.25f), glm::vec3(0.8f, 0.5f, 0.2f));
-	// upper rectangles
-	Rectangle rectSix(glm::vec2(-0.5f, 0.5f), glm::vec2(0.25f, 0.25f), glm::vec3(0.665f, 0.2555f, 0.8f));
-	Rectangle rectSeven(glm::vec2(0.0f, 0.5f), glm::vec2(0.25f, 0.25f), glm::vec3(0.46f, 0.8f, 0.9f));
-	Rectangle rectEight(glm::vec2(0.5f, 0.5f), glm::vec2(0.25f, 0.25f), glm::vec3(0.9f, 0.2f, 0.1f));
+	
+	Rectangle rectangleOne(glm::vec2(0.17f, 0.17f), glm::vec2(0.5f, 0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
+	Rectangle rectangleTwo(glm::vec2(-0.17f, -0.17f), glm::vec2(0.5f, 0.5f), glm::vec3(0.0f, 1.0f, 0.0f));
+	Rectangle rectangleThree(glm::vec2(0.17f, -0.17f), glm::vec2(0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f));
+	Rectangle rectangleFour(glm::vec2(-0.17f, 0.17f), glm::vec2(0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 0.0f));
 	// ------------------------------------------------------------------------------->>
 
+	// ------------------------------------------------------------------------------->>
+	unsigned int modelLoc = glGetUniformLocation(shaderManager.getShaderProgram(), "model");
+	unsigned int projectionLoc = glGetUniformLocation(shaderManager.getShaderProgram(), "projection");
+	glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
+	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+	double lastTime = glfwGetTime();
 	while (!glfwWindowShouldClose(window) && isRunning)
 	{
 		fpsCalculate();
 		processInput();
 		glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		shaderManager.useShaderProgram();
-		rect.draw();
-		rectOne.draw();
-		rectTwo.draw();
-		rectThree.draw();
-		rectFour.draw();
-		rectFive.draw();
-		rectSix.draw();
-		rectSeven.draw();
-		rectEight.draw();
+		double currentTime = glfwGetTime();
+		if (currentTime - lastTime >= 0.01) {
+			glm::vec2 tempPos = rectangleOne.getPosition();
+			rectangleOne.setPosition(glm::vec2(tempPos.x + 0.01f, tempPos.y + 0.01f));
+			rectangleOne.resetModelAndSetPosition(rectangleOne.getPosition(), modelLoc);
+			rectangleTwo.transform(glm::vec2(0.01f, 0.01f));
+			rectangleThree.rotate(1.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+			rectangleFour.scaleRect(glm::vec2(0.1f, 0.1f));
+			lastTime = currentTime;
+		}
+		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+		rectangleOne.draw(modelLoc);
+		rectangleTwo.draw(modelLoc);
+		rectangleThree.draw(modelLoc);
+		rectangleFour.draw(modelLoc);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 	// delete stuff
-	rect.~Rectangle();
-	rectOne.~Rectangle();
-	rectTwo.~Rectangle();
-	rectThree.~Rectangle();
-	rectFour.~Rectangle();
-	rectFive.~Rectangle();
-	rectSix.~Rectangle();
-	rectSeven.~Rectangle();
-	rectEight.~Rectangle();
+	rectangleOne.~Rectangle();
+	rectangleTwo.~Rectangle();
+	rectangleThree.~Rectangle();
+	rectangleFour.~Rectangle();
 	shaderManager.deleteShaderProgram();
 }

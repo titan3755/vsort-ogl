@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 
 #ifndef SHADER_MANAGER_H
@@ -22,7 +23,7 @@ public:
 	ShaderManager();
 	~ShaderManager();
 	bool createShaderProgram();
-	const char* shaderReaderFromFile(const char* shaderPath, const char* shaderType);
+	const std::string shaderReaderFromFile(const char* shaderPath);
 	bool shaderWriterToFile(const char* shaderPath, const char* shaderSource);
 	bool compileShaders();	
 	void useShaderProgram();
