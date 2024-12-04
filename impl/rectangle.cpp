@@ -128,6 +128,11 @@ glm::vec3 Rectangle::getScale()
     return this->scale;
 }
 
+glm::vec2 Rectangle::getSize()
+{
+	return glm::vec2(this->size.x, this->size.y);
+}
+
 glm::mat4 Rectangle::getModel()
 {
     return this->model;

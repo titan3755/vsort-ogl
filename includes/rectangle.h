@@ -21,6 +21,7 @@ public:
     glm::vec3 getColor();
     glm::vec3 getPosition();
     glm::vec3 getScale();
+	glm::vec2 getSize();
     glm::mat4 getModel();
 
 private:

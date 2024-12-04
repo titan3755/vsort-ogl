@@ -128,18 +128,29 @@ void Application::run()
 	// ------------------------------------------------------------------------------->>
 
 	// ------------------------------------------------------------------------------->>
-	// rectangle implementation
-	
-	Rectangle rectangleOne(glm::vec2(0.17f, 0.17f), glm::vec2(0.5f, 0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
-	Rectangle rectangleTwo(glm::vec2(-0.17f, -0.17f), glm::vec2(0.5f, 0.5f), glm::vec3(0.0f, 1.0f, 0.0f));
-	Rectangle rectangleThree(glm::vec2(0.17f, -0.17f), glm::vec2(0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f));
-	Rectangle rectangleFour(glm::vec2(-0.17f, 0.17f), glm::vec2(0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 0.0f));
-	// ------------------------------------------------------------------------------->>
-
-	// ------------------------------------------------------------------------------->>
+	// rectangle array for sorting visualization
+	int amount = 4000;
+	float rectThickness = 0.05f;
+	std::vector<Rectangle> rectangles;
+	rectangles.reserve(amount);
+	// generate rectangles
 	unsigned int modelLoc = glGetUniformLocation(shaderManager.getShaderProgram(), "model");
+	for (int i = 0; i < amount; i++) {
+		// map 2000 rectangles from -1.0f to 1.0f
+		float rnd = static_cast<float>(rand()) / RAND_MAX * 2.0f - 0.8f;
+		// random color from 0.0f to 1.0f
+		rectangles.emplace_back(glm::vec2(-1.0f, 0.0f), glm::vec2(rectThickness, std::abs(rnd)), glm::vec3(0.0f, 0.0f, 0.0f));  // Ensure positive height
+	}
+	// Now, place rectangles and account for their height
+	for (int i = 0; i < amount; i++) {
+		float x = -1.0f + i * 0.0006666f;
+		// Center each rectangle in the Y direction
+		float y = -1.0f + (std::abs(rectangles[i].getSize().y) / 2.0f);
+		rectangles[i].resetModelAndSetPosition(glm::vec2(x, y), modelLoc);
+	}
+	// ------------------------------------------------------------------------------->>
 	unsigned int projectionLoc = glGetUniformLocation(shaderManager.getShaderProgram(), "projection");
-	glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
+	glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 	double lastTime = glfwGetTime();
 	while (!glfwWindowShouldClose(window) && isRunning)
@@ -148,28 +159,20 @@ void Application::run()
 		processInput();
 		glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		double currentTime = glfwGetTime();
-		if (currentTime - lastTime >= 0.01) {
-			glm::vec2 tempPos = rectangleOne.getPosition();
-			rectangleOne.setPosition(glm::vec2(tempPos.x + 0.01f, tempPos.y + 0.01f));
-			rectangleOne.resetModelAndSetPosition(rectangleOne.getPosition(), modelLoc);
-			rectangleTwo.transform(glm::vec2(0.01f, 0.01f));
-			rectangleThree.rotate(1.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-			rectangleFour.scaleRect(glm::vec2(0.1f, 0.1f));
-			lastTime = currentTime;
-		}
+		int recRandomOne = rand() % amount;
+		int recRandomTwo = rand() % amount;
+		float xOne = -1.0f + recRandomOne * 0.0006666f;
+		float xTwo = -1.0f + recRandomTwo * 0.0006666f;
+		rectangles[recRandomOne].resetModelAndSetPosition(glm::vec2(xTwo, -1.0f), modelLoc);
+		rectangles[recRandomTwo].resetModelAndSetPosition(glm::vec2(xOne, -1.0f), modelLoc);
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-		rectangleOne.draw(modelLoc);
-		rectangleTwo.draw(modelLoc);
-		rectangleThree.draw(modelLoc);
-		rectangleFour.draw(modelLoc);
+		// draw rectangles
+		for (int i = 0; i < amount; i++) {
+			rectangles[i].draw(modelLoc);
+		}
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 	// delete stuff
-	rectangleOne.~Rectangle();
-	rectangleTwo.~Rectangle();
-	rectangleThree.~Rectangle();
-	rectangleFour.~Rectangle();
 	shaderManager.deleteShaderProgram();
 }

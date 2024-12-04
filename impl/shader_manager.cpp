@@ -77,8 +77,9 @@ bool ShaderManager::compileShaders()
         std::cerr << "Vertex shader compilation failed: " << infoLog << std::endl;
         return false;
     }
-
-	std::cout << "Vertex shader source: " << vertexShaderSource << "\n\n";
+	std::cout << "--------------------------------------\n";
+	std::cout << "Vertex shader source: \n" << vertexShaderSource << "\n\n";
+	std::cout << "--------------------------------------\n";
 
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
     glCompileShader(fragmentShader);
@@ -90,6 +91,10 @@ bool ShaderManager::compileShaders()
         std::cerr << "Fragment shader compilation failed: " << infoLog << std::endl;
         return false;
     }
+
+	std::cout << "--------------------------------------\n";
+	std::cout << "Fragment shader source: \n" << fragmentShaderSource << "\n\n";
+	std::cout << "--------------------------------------\n";
 
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
