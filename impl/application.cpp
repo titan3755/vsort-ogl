@@ -130,7 +130,7 @@ void Application::run()
 	// ------------------------------------------------------------------------------->>
 	// rectangle array for sorting visualization
 	int amount = 4000;
-	float rectThickness = 0.05f;
+	float rectThickness = 0.04f;
 	std::vector<Rectangle> rectangles;
 	rectangles.reserve(amount);
 	// generate rectangles
@@ -143,7 +143,7 @@ void Application::run()
 	}
 	// Now, place rectangles and account for their height
 	for (int i = 0; i < amount; i++) {
-		float x = -1.0f + i * 0.0006666f;
+		float x = -1.0f + i * 0.0005f;
 		// Center each rectangle in the Y direction
 		float y = -1.0f + (std::abs(rectangles[i].getSize().y) / 2.0f);
 		rectangles[i].resetModelAndSetPosition(glm::vec2(x, y), modelLoc);
@@ -161,8 +161,8 @@ void Application::run()
 		glClear(GL_COLOR_BUFFER_BIT);
 		int recRandomOne = rand() % amount;
 		int recRandomTwo = rand() % amount;
-		float xOne = -1.0f + recRandomOne * 0.0006666f;
-		float xTwo = -1.0f + recRandomTwo * 0.0006666f;
+		float xOne = -1.0f + recRandomOne * 0.0005f;
+		float xTwo = -1.0f + recRandomTwo * 0.0005f;
 		rectangles[recRandomOne].resetModelAndSetPosition(glm::vec2(xTwo, -1.0f), modelLoc);
 		rectangles[recRandomTwo].resetModelAndSetPosition(glm::vec2(xOne, -1.0f), modelLoc);
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));

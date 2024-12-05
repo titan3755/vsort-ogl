@@ -1,9 +1,11 @@
-#ifndef RECTANGLE_H
-#define RECTANGLE_H
+#pragma once
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glad/glad.h>
+
+#ifndef RECTANGLE_H
+#define RECTANGLE_H
 
 class Rectangle {
 public:
@@ -23,16 +25,15 @@ public:
     glm::vec3 getScale();
 	glm::vec2 getSize();
     glm::mat4 getModel();
-
-private:
-    void setupBuffers();
-
-    GLuint VAO, VBO, EBO;
     glm::vec3 position;
     glm::vec3 size;
     glm::vec3 scale;
     glm::vec3 color;
     glm::mat4 model;
+
+private:
+    void setupBuffers();
+    GLuint VAO, VBO, EBO;
 };
 
 #endif // RECTANGLE_H
