@@ -25,9 +25,11 @@ public:
 	int arrayToBeSorted[AMOUNT];
 	VisualSort(unsigned int mloc);
 	~VisualSort();
+	void debugInitialRectangleConfig();
 	void generateSequentialArray();
 	void shuffleArray();
 	void createRectangles();
+	void properlyPlaceRectangles();
 	void bubbleSort();
 	void bubbleSortStep();
 	void selectionSort();
@@ -37,7 +39,7 @@ public:
 	//void mergeSort(int l, int r);
 	//void merge(int l, int m, int r);
 	//void quickSort(int low, int high);
-	void drawRectangles();
+	void drawRectangles(unsigned int mloc);
 	//void updateRectangles();
 	//void resetRectangles();
 	void swap(Rectangle& a, Rectangle& b);

@@ -2,7 +2,9 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <glad/glad.h>
+#include <iostream>
 
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
@@ -10,7 +12,9 @@
 class Rectangle {
 public:
     Rectangle(glm::vec2 position, glm::vec2 size, glm::vec3 color);
-    ~Rectangle();
+    void setup(glm::vec2 position, glm::vec2 size, glm::vec3 color);
+    void setupBuffers();
+    void deleteObj();
     void draw(unsigned int mLoc);
     void transform(glm::vec2 displacement);
     void rotate(float angle, glm::vec3 axis);
@@ -32,7 +36,6 @@ public:
     glm::mat4 model;
 
 private:
-    void setupBuffers();
     GLuint VAO, VBO, EBO;
 };
 

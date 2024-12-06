@@ -3,13 +3,23 @@
 VisualSort::VisualSort(unsigned int mloc)
 {
 	this->modelLoc = mloc;
-	generateSequentialArray();
-	createRectangles();
-	shuffleArray();
 }
 
 VisualSort::~VisualSort()
 {
+}
+
+void VisualSort::debugInitialRectangleConfig()
+{
+	rectangles.reserve(AMOUNT);
+	for (int i = 0; i < AMOUNT; i++)
+	{
+		rectangles.emplace_back(glm::vec2(-1.0f + (2.0f / AMOUNT) * i, -1.0f), glm::vec2(1.0f, std::abs(i * 0.0005f)), glm::vec3(0.0f, 0.0f, 0.0f));
+	}
+	for (int i = 0; i < AMOUNT; i++)
+	{
+		rectangles[i].setupBuffers();
+	}
 }
 
 void VisualSort::generateSequentialArray()
@@ -35,6 +45,17 @@ void VisualSort::createRectangles()
 	{
 		// the rectangle positions must be within normalized device coordinates
 		rectangles.emplace_back(glm::vec2(-1.0f + (2.0f / AMOUNT) * i, -2.0f), glm::vec2(0.04f, std::abs(arrayToBeSorted[i] * 0.0025f)), glm::vec3(0.0f, 0.0f, 0.0f));
+	}
+}
+
+void VisualSort::properlyPlaceRectangles()
+{
+	for (int i = 0; i < AMOUNT; i++)
+	{
+		rectangles[i].setScale(glm::vec2(0.04f, std::abs(arrayToBeSorted[i] * 0.0025f)));
+		// centralize and normalize the rectangles
+		rectangles[i].setPosition(glm::vec2(-1.0f + (2.0f / AMOUNT) * i, -2.0f));
+		rectangles[i].resetModelAndSetPosition(glm::vec2(rectangles[i].position.x, rectangles[i].position.y), modelLoc);
 	}
 }
 
@@ -211,11 +232,11 @@ void VisualSort::printArray()
 	std::cout << std::endl;
 }
 
-void VisualSort::drawRectangles()
+void VisualSort::drawRectangles(unsigned int mloc)
 {
 	for (int i = 0; i < AMOUNT; i++)
 	{
-		rectangles[i].draw(modelLoc);
+		rectangles[i].draw(mloc);
 	}
 }
 

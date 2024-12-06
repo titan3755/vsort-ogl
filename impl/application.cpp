@@ -128,22 +128,23 @@ void Application::run()
 	// ------------------------------------------------------------------------------->>
 	unsigned int modelLoc = glGetUniformLocation(shaderManager.getShaderProgram(), "model");
 	unsigned int projectionLoc = glGetUniformLocation(shaderManager.getShaderProgram(), "projection");
-	glm::mat4 projection = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f);
-	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+	glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 	// ------------------------------------------------------------------------------->>
 	// rectangle array for sorting visualization
+	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 	VisualSort visualSort(modelLoc);
+	visualSort.debugInitialRectangleConfig();
 	// ------------------------------------------------------------------------------->>
 	double lastTime = glfwGetTime();
 	while (!glfwWindowShouldClose(window) && isRunning)
 	{
+		shaderManager.useShaderProgram();
 		fpsCalculate();
 		processInput();
 		glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		visualSort.bubbleSortStep();
 		// draw rectangles
-		visualSort.drawRectangles();
+		visualSort.drawRectangles(modelLoc);
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glfwSwapBuffers(window);
 		glfwPollEvents();

@@ -1,5 +1,20 @@
 #include "Rectangle.h"
-#include <glm/gtc/matrix_transform.hpp>
+
+Rectangle::Rectangle(glm::vec2 position, glm::vec2 size, glm::vec3 color)
+{
+	setup(position, size, color);
+}
+
+void Rectangle::setup(glm::vec2 position, glm::vec2 size, glm::vec3 color) 
+{
+	this->position = glm::vec3(position, 0.0f);
+	this->size = glm::vec3(size, 0.0f);
+	this->scale = glm::vec3(size, 0.0f);
+	this->color = color;
+	this->model = glm::mat4(1.0f);
+	this->model = glm::translate(this->model, this->position);  // Apply initial translation
+	this->model = glm::scale(this->model, this->scale);         // Apply initial scaling
+}
 
 void Rectangle::setupBuffers()
 {
@@ -37,28 +52,46 @@ void Rectangle::setupBuffers()
     glBindVertexArray(0);
 }
 
-Rectangle::Rectangle(glm::vec2 position, glm::vec2 size, glm::vec3 color)
-{
-    this->position = glm::vec3(position, 0.0f);
-    this->size = glm::vec3(size, 0.0f);
-    this->scale = glm::vec3(size, 0.0f);
-    this->color = color;
-    this->model = glm::mat4(1.0f);
-    this->model = glm::translate(this->model, this->position);  // Apply initial translation
-    this->model = glm::scale(this->model, this->scale);         // Apply initial scaling
-    setupBuffers();
-}
+//Rectangle::Rectangle(glm::vec2 position, glm::vec2 size, glm::vec3 color)
+//{
+//    this->position = glm::vec3(position, 0.0f);
+//    this->size = glm::vec3(size, 0.0f);
+//    this->scale = glm::vec3(size, 0.0f);
+//    this->color = color;
+//    this->model = glm::mat4(1.0f);
+//    this->model = glm::translate(this->model, this->position);  // Apply initial translation
+//    this->model = glm::scale(this->model, this->scale);         // Apply initial scaling
+//    setupBuffers();
+//}
+//
+//Rectangle::~Rectangle()
+//{
+//    glDeleteVertexArrays(1, &VAO);
+//    glDeleteBuffers(1, &VBO);
+//    glDeleteBuffers(1, &EBO);
+//}
 
-Rectangle::~Rectangle()
+
+void Rectangle::deleteObj()
 {
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
 }
 
 void Rectangle::draw(unsigned int mLoc)
 {
+    if (mLoc == -1) {
+        std::cerr << "Error: Invalid uniform location" << std::endl;
+        return;
+    }
+
     glUniformMatrix4fv(mLoc, 1, GL_FALSE, glm::value_ptr(this->model));  // Update the model matrix in the shader
+    
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+        std::cerr << "OpenGL error: " << error << std::endl;
+    }
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
