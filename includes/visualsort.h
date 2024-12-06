@@ -1,5 +1,5 @@
 #pragma once
-
+#define GLM_ENABLE_EXPERIMENTAL
 #include <shader_manager.h>
 #include <rectangle.h>
 #include <glad/glad.h>
@@ -12,6 +12,8 @@
 #ifndef VISUALSORT_H
 #define VISUALSORT_H
 
+#define AMOUNT 4000
+
 // visual sort class
 class VisualSort
 {
@@ -20,20 +22,24 @@ private:
 	ShaderManager shaderManager;
 	unsigned int modelLoc;
 public:
-	int arrayToBeSorted[4000];
-	VisualSort();
+	int arrayToBeSorted[AMOUNT];
+	VisualSort(unsigned int mloc);
 	~VisualSort();
-	void generateRandomArray();
+	void generateSequentialArray();
+	void shuffleArray();
 	void createRectangles();
 	void bubbleSort();
+	void bubbleSortStep();
 	void selectionSort();
+	void selectionSortStep();
 	void insertionSort();
-	void mergeSort(int l, int r);
-	void merge(int l, int m, int r);
-	void quickSort(int low, int high);
+	void insertionSortStep();
+	//void mergeSort(int l, int r);
+	//void merge(int l, int m, int r);
+	//void quickSort(int low, int high);
 	void drawRectangles();
-	void updateRectangles();
-	void resetRectangles();
+	//void updateRectangles();
+	//void resetRectangles();
 	void swap(Rectangle& a, Rectangle& b);
 	void swap(int& a, int& b);
 	void printArray();

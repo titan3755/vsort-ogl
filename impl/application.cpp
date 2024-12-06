@@ -126,32 +126,14 @@ void Application::run()
 	printOpenGLInfo();
 	shaderManager.useShaderProgram();
 	// ------------------------------------------------------------------------------->>
-
+	unsigned int modelLoc = glGetUniformLocation(shaderManager.getShaderProgram(), "model");
+	unsigned int projectionLoc = glGetUniformLocation(shaderManager.getShaderProgram(), "projection");
+	glm::mat4 projection = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f);
+	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 	// ------------------------------------------------------------------------------->>
 	// rectangle array for sorting visualization
-	int amount = 4000;
-	float rectThickness = 0.04f;
-	std::vector<Rectangle> rectangles;
-	rectangles.reserve(amount);
-	// generate rectangles
-	unsigned int modelLoc = glGetUniformLocation(shaderManager.getShaderProgram(), "model");
-	for (int i = 0; i < amount; i++) {
-		// map 2000 rectangles from -1.0f to 1.0f
-		float rnd = static_cast<float>(rand()) / RAND_MAX * 2.0f - 0.8f;
-		// random color from 0.0f to 1.0f
-		rectangles.emplace_back(glm::vec2(-1.0f, 0.0f), glm::vec2(rectThickness, std::abs(rnd)), glm::vec3(0.0f, 0.0f, 0.0f));  // Ensure positive height
-	}
-	// Now, place rectangles and account for their height
-	for (int i = 0; i < amount; i++) {
-		float x = -1.0f + i * 0.0005f;
-		// Center each rectangle in the Y direction
-		float y = -1.0f + (std::abs(rectangles[i].getSize().y) / 2.0f);
-		rectangles[i].resetModelAndSetPosition(glm::vec2(x, y), modelLoc);
-	}
+	VisualSort visualSort(modelLoc);
 	// ------------------------------------------------------------------------------->>
-	unsigned int projectionLoc = glGetUniformLocation(shaderManager.getShaderProgram(), "projection");
-	glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
-	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 	double lastTime = glfwGetTime();
 	while (!glfwWindowShouldClose(window) && isRunning)
 	{
@@ -159,17 +141,10 @@ void Application::run()
 		processInput();
 		glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		int recRandomOne = rand() % amount;
-		int recRandomTwo = rand() % amount;
-		float xOne = -1.0f + recRandomOne * 0.0005f;
-		float xTwo = -1.0f + recRandomTwo * 0.0005f;
-		rectangles[recRandomOne].resetModelAndSetPosition(glm::vec2(xTwo, -1.0f), modelLoc);
-		rectangles[recRandomTwo].resetModelAndSetPosition(glm::vec2(xOne, -1.0f), modelLoc);
-		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+		visualSort.bubbleSortStep();
 		// draw rectangles
-		for (int i = 0; i < amount; i++) {
-			rectangles[i].draw(modelLoc);
-		}
+		visualSort.drawRectangles();
+		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

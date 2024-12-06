@@ -1,6 +1,7 @@
 #pragma once
 #define GLM_ENABLE_EXPERIMENTAL
 #include <shader_manager.h>
+#include <visualsort.h>
 #include <rectangle.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
