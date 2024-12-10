@@ -132,22 +132,39 @@ void Application::run()
 	// ------------------------------------------------------------------------------->>
 	// rectangle array for sorting visualization
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-	VisualSort visualSort(modelLoc);
+	// ------------------------------------------------------------------------------->>
+	// VisualSort class implementation
+	int tempArray[AMOUNT];
+	for (int i = 0; i < AMOUNT; i++)
+	{
+		tempArray[i] = i + 1;
+	}
+	VisualSort visualSort(modelLoc, tempArray);
 	visualSort.debugInitialRectangleConfig();
+	int count = 1;
 	// ------------------------------------------------------------------------------->>
 	double lastTime = glfwGetTime();
 	while (!glfwWindowShouldClose(window) && isRunning)
 	{
+		if (count >= 100) {
+			visualSort.setReverse(!visualSort.getReverse());
+			count = 0;
+			std::cout << "Reversed!" << std::endl;
+		}
 		shaderManager.useShaderProgram();
 		fpsCalculate();
 		processInput();
 		glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+		// randomly swap
+		int rand = std::rand() % AMOUNT;
+		visualSort.swap(rand, rand + 1);
 		// draw rectangles
 		visualSort.drawRectangles(modelLoc);
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+		count++;
 	}
 	// delete stuff
 	shaderManager.deleteShaderProgram();

@@ -18,12 +18,13 @@
 class VisualSort
 {
 private:
-	std::vector<Rectangle> rectangles;
 	ShaderManager shaderManager;
 	unsigned int modelLoc;
+	bool reverse;
 public:
+	std::vector<Rectangle> rectangles;
 	int arrayToBeSorted[AMOUNT];
-	VisualSort(unsigned int mloc);
+	VisualSort(unsigned int mloc, int arry[AMOUNT]);
 	~VisualSort();
 	void debugInitialRectangleConfig();
 	void generateSequentialArray();
@@ -42,9 +43,11 @@ public:
 	void drawRectangles(unsigned int mloc);
 	//void updateRectangles();
 	//void resetRectangles();
-	void swap(Rectangle& a, Rectangle& b);
-	void swap(int& a, int& b);
+	void swap(int a, int b);
+	void swapArr(int& a, int& b);
 	void printArray();
+	bool getReverse();
+	void setReverse(bool rev);
 };
 
 #endif // VISUALSORT_H

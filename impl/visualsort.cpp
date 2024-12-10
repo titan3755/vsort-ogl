@@ -1,12 +1,17 @@
 #include <visualsort.h>
 
-VisualSort::VisualSort(unsigned int mloc)
+VisualSort::VisualSort(unsigned int mloc, int arry[AMOUNT])
 {
+	std::copy(arry, arry + AMOUNT, this->arrayToBeSorted);
 	this->modelLoc = mloc;
+	this->reverse = true;
 }
 
 VisualSort::~VisualSort()
 {
+	for (int i = 0; i < AMOUNT; i++) {
+		rectangles[i].deleteObj();
+	}
 }
 
 void VisualSort::debugInitialRectangleConfig()
@@ -33,9 +38,15 @@ void VisualSort::shuffleArray()
 {
 	for (int i = 0; i < AMOUNT; i++)
 	{
-		int randomIndex = rand() % AMOUNT;
-		swap(arrayToBeSorted[i], arrayToBeSorted[randomIndex]);
-		swap(rectangles[i], rectangles[randomIndex]);
+		if (reverse && i + 1 < AMOUNT) {
+			swap(i, i + 1);
+		}
+		else if (reverse && i + 1 == AMOUNT) {
+			swap(i, i - 1);
+		}
+		else {
+			swap(i, i - 1);
+		}
 	}
 }
 
@@ -59,98 +70,98 @@ void VisualSort::properlyPlaceRectangles()
 	}
 }
 
-void VisualSort::bubbleSort()
-{
-	int n = AMOUNT;
-	for (int i = 0; i < n - 1; i++)
-	{
-		for (int j = 0; j < n - i - 1; j++)
-		{
-			if (arrayToBeSorted[j] > arrayToBeSorted[j + 1])
-			{
-				swap(arrayToBeSorted[j], arrayToBeSorted[j + 1]);
-				swap(rectangles[j], rectangles[j + 1]);
-			}
-		}
-	}
-}
-
-void VisualSort::bubbleSortStep()
-{
-	static int i = 0;
-	static int j = 0;
-	int n = AMOUNT;
-	if (i < n - 1)
-	{
-		if (j < n - i - 1)
-		{
-			if (arrayToBeSorted[j] > arrayToBeSorted[j + 1])
-			{
-				swap(arrayToBeSorted[j], arrayToBeSorted[j + 1]);
-				swap(rectangles[j], rectangles[j + 1]);
-			}
-			j++;
-		}
-		else
-		{
-			i++;
-			j = 0;
-		}
-	}
-	else {
-		i = 0;
-		j = 0;
-	}
-}
-
-void VisualSort::selectionSort()
-{
-	int n = AMOUNT;
-	for (int i = 0; i < n - 1; i++)
-	{
-		int min_idx = i;
-		for (int j = i + 1; j < n; j++)
-		{
-			if (arrayToBeSorted[j] < arrayToBeSorted[min_idx])
-			{
-				min_idx = j;
-			}
-		}
-		swap(arrayToBeSorted[min_idx], arrayToBeSorted[i]);
-		swap(rectangles[min_idx], rectangles[i]);
-	}
-}
-
-void VisualSort::selectionSortStep()
-{
-	static int i = 0;
-	static int j = 0;
-	int n = AMOUNT;
-	if (i < n - 1)
-	{
-		int min_idx = i;
-		if (j < n)
-		{
-			if (arrayToBeSorted[j] < arrayToBeSorted[min_idx])
-			{
-				min_idx = j;
-			}
-			j++;
-		}
-		else
-		{
-			swap(arrayToBeSorted[min_idx], arrayToBeSorted[i]);
-			swap(rectangles[min_idx], rectangles[i]);
-			i++;
-			j = i;
-		}
-	}
-	else
-	{
-		i = 0;
-		j = 0;
-	}
-}
+//void VisualSort::bubbleSort()
+//{
+//	int n = AMOUNT;
+//	for (int i = 0; i < n - 1; i++)
+//	{
+//		for (int j = 0; j < n - i - 1; j++)
+//		{
+//			if (arrayToBeSorted[j] > arrayToBeSorted[j + 1])
+//			{
+//				swap(arrayToBeSorted[j], arrayToBeSorted[j + 1]);
+//				swap(rectangles[j], rectangles[j + 1]);
+//			}
+//		}
+//	}
+//}
+//
+//void VisualSort::bubbleSortStep()
+//{
+//	static int i = 0;
+//	static int j = 0;
+//	int n = AMOUNT;
+//	if (i < n - 1)
+//	{
+//		if (j < n - i - 1)
+//		{
+//			if (arrayToBeSorted[j] > arrayToBeSorted[j + 1])
+//			{
+//				swap(arrayToBeSorted[j], arrayToBeSorted[j + 1]);
+//				swap(rectangles[j], rectangles[j + 1]);
+//			}
+//			j++;
+//		}
+//		else
+//		{
+//			i++;
+//			j = 0;
+//		}
+//	}
+//	else {
+//		i = 0;
+//		j = 0;
+//	}
+//}
+//
+//void VisualSort::selectionSort()
+//{
+//	int n = AMOUNT;
+//	for (int i = 0; i < n - 1; i++)
+//	{
+//		int min_idx = i;
+//		for (int j = i + 1; j < n; j++)
+//		{
+//			if (arrayToBeSorted[j] < arrayToBeSorted[min_idx])
+//			{
+//				min_idx = j;
+//			}
+//		}
+//		swap(arrayToBeSorted[min_idx], arrayToBeSorted[i]);
+//		swap(rectangles[min_idx], rectangles[i]);
+//	}
+//}
+//
+//void VisualSort::selectionSortStep()
+//{
+//	static int i = 0;
+//	static int j = 0;
+//	int n = AMOUNT;
+//	if (i < n - 1)
+//	{
+//		int min_idx = i;
+//		if (j < n)
+//		{
+//			if (arrayToBeSorted[j] < arrayToBeSorted[min_idx])
+//			{
+//				min_idx = j;
+//			}
+//			j++;
+//		}
+//		else
+//		{
+//			swap(arrayToBeSorted[min_idx], arrayToBeSorted[i]);
+//			swap(rectangles[min_idx], rectangles[i]);
+//			i++;
+//			j = i;
+//		}
+//	}
+//	else
+//	{
+//		i = 0;
+//		j = 0;
+//	}
+//}
 
 void VisualSort::insertionSort()
 {
@@ -207,16 +218,16 @@ void VisualSort::insertionSortStep()
 //	}
 //}
 
-void VisualSort::swap(Rectangle& a, Rectangle& b)
+void VisualSort::swap(int a, int b)
 {
-	Rectangle temp = a;
-	a = b;
-	b = temp;
-	a.resetModelAndSetPosition(glm::vec2(a.position.x, a.position.y), modelLoc);
-	b.resetModelAndSetPosition(glm::vec2(b.position.x, b.position.y), modelLoc);
+	Rectangle temp = rectangles[a];
+	this->rectangles[a] = rectangles[b];
+	this->rectangles[b] = temp;
+	this->rectangles[a].resetModelAndSetPosition(glm::vec2(rectangles[a].position.x, rectangles[a].position.y + 0.04f), modelLoc);
+	this->rectangles[b].resetModelAndSetPosition(glm::vec2(rectangles[b].position.x, rectangles[b].position.y - 0.04f), modelLoc);
 }
 
-void VisualSort::swap(int& a, int& b)
+void VisualSort::swapArr(int& a, int& b)
 {
 	int temp = a;
 	a = b;
@@ -238,6 +249,16 @@ void VisualSort::drawRectangles(unsigned int mloc)
 	{
 		rectangles[i].draw(mloc);
 	}
+}
+
+bool VisualSort::getReverse()
+{
+	return reverse;
+}
+
+void VisualSort::setReverse(bool rev)
+{
+	this->reverse = rev;
 }
 
 //void VisualSort::updateRectangles()
