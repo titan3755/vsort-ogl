@@ -19,7 +19,7 @@ void Rectangle::setup(glm::vec2 position, glm::vec2 size, glm::vec3 color)
 void Rectangle::setupBuffers()
 {
     float vertices[] = {
-        // positions         // colors
+        // positions                                    // colors
         position.x + size.x, position.y + size.y, 0.0f, color.r, color.g, color.b, // top right
         position.x + size.x, position.y - size.y, 0.0f, color.r, color.g, color.b, // bottom right
         position.x - size.x, position.y - size.y, 0.0f, color.r, color.g, color.b, // bottom left

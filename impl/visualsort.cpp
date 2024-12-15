@@ -19,7 +19,7 @@ void VisualSort::debugInitialRectangleConfig()
 	rectangles.reserve(AMOUNT);
 	for (int i = 0; i < AMOUNT; i++)
 	{
-		rectangles.emplace_back(glm::vec2(-1.0f + (2.0f / AMOUNT) * i, -1.0f), glm::vec2(1.0f, std::abs(i * 0.0005f)), glm::vec3(0.0f, 0.0f, 0.0f));
+		rectangles.emplace_back(glm::vec2(-1.0f + (2.0f / AMOUNT) * i, -1.0f), glm::vec2(0.01f, std::abs(i * 0.0005f)), glm::vec3(0.0f, 0.0f, 0.0f));
 	}
 	for (int i = 0; i < AMOUNT; i++)
 	{

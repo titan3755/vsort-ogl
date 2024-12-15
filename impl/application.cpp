@@ -126,42 +126,41 @@ void Application::run()
 	printOpenGLInfo();
 	shaderManager.useShaderProgram();
 	// ------------------------------------------------------------------------------->>
-	unsigned int modelLoc = glGetUniformLocation(shaderManager.getShaderProgram(), "model");
+	// coordinate system processing
+	glm::mat4 view = glm::mat4(1.0f);
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -4.0f));
+	glm::mat4 projection;
+	projection = glm::ortho(0.0f, (float)width, 0.0f, (float)height, 0.1f, 100.0f);
+	glm::mat4 model = glm::mat4(1.0f);
+	// ------------------------------------------------------------------------------->>
+	// uniform processing
 	unsigned int projectionLoc = glGetUniformLocation(shaderManager.getShaderProgram(), "projection");
-	glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
-	// ------------------------------------------------------------------------------->>
-	// rectangle array for sorting visualization
+	unsigned int viewLoc = glGetUniformLocation(shaderManager.getShaderProgram(), "view");
+	unsigned int modelLoc = glGetUniformLocation(shaderManager.getShaderProgram(), "model");
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 	// ------------------------------------------------------------------------------->>
-	// VisualSort class implementation
-	int tempArray[AMOUNT];
-	for (int i = 0; i < AMOUNT; i++)
-	{
-		tempArray[i] = i + 1;
-	}
-	VisualSort visualSort(modelLoc, tempArray);
-	visualSort.debugInitialRectangleConfig();
-	int count = 1;
+	// shape setup
+	Rectangle rect(glm::vec2(0.0f, 0.0f), glm::vec2(10.0f, 10.0f), glm::vec3(0.9f, 0.8f, 0.5f));
+	rect.setupBuffers();
+	int count = 0;
 	// ------------------------------------------------------------------------------->>
-	double lastTime = glfwGetTime();
+	// loop
 	while (!glfwWindowShouldClose(window) && isRunning)
 	{
-		if (count >= 100) {
-			visualSort.setReverse(!visualSort.getReverse());
-			count = 0;
-			std::cout << "Reversed!" << std::endl;
-		}
 		shaderManager.useShaderProgram();
 		fpsCalculate();
 		processInput();
+		if (rect.position.y < 120) {
+			rect.transform(glm::vec2(0.1f, 0.02f));
+		}
+		std::cout << rect.position.x << " " << rect.position.y << std::endl;
+		// clear screen
 		glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		// randomly swap
-		int rand = std::rand() % AMOUNT;
-		visualSort.swap(rand, rand + 1);
 		// draw rectangles
-		visualSort.drawRectangles(modelLoc);
-		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+		rect.draw(modelLoc);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		count++;
